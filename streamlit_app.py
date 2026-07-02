@@ -105,46 +105,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ── ODE Systems ────────────────────────────────────────────────────────────────
+# ── ODE System ─────────────────────────────────────────────────────────────────
 def lorenz(t, state, sigma=10, rho=28, beta=8/3):
     x, y, z = state
     return [sigma*(y - x), x*(rho - z) - y, x*y - beta*z]
-
-def rossler(t, state, a=0.1, b=0.1, c=14):
-    x, y, z = state
-    return [-y - z, x + a*y, b + z*(x - c)]
-
-def duffing(t, state, alpha=1, beta=-1, delta=0.2, gamma=0.3, omega=1.2):
-    x, v = state
-    return [v, -delta*v - alpha*x - beta*x**3 + gamma*np.cos(omega*t)]
-
-def vanderpol(t, state, mu=2.0):
-    x, v = state
-    return [v, mu*(1 - x**2)*v - x]
 
 SYSTEMS = {
     "Lorenz": {
         "fn": lorenz, "dim": 3, "ic": [1.0, 1.0, 1.0],
         "t_span": (0, 60), "dt": 0.01,
         "desc": "The canonical chaotic butterfly attractor (σ=10, ρ=28, β=8/3).",
-        "obs_idx": 0, "obs_name": "x(t)"
-    },
-    "Rössler": {
-        "fn": rossler, "dim": 3, "ic": [0.0, 1.0, 0.0],
-        "t_span": (0, 150), "dt": 0.02,
-        "desc": "A simpler chaotic attractor with one folded band (a=0.1, b=0.1, c=14).",
-        "obs_idx": 0, "obs_name": "x(t)"
-    },
-    "Duffing": {
-        "fn": duffing, "dim": 2, "ic": [0.5, 0.0],
-        "t_span": (0, 200), "dt": 0.02,
-        "desc": "Periodically driven nonlinear oscillator; chaotic for these parameters.",
-        "obs_idx": 0, "obs_name": "x(t)"
-    },
-    "Van der Pol": {
-        "fn": vanderpol, "dim": 2, "ic": [2.0, 0.0],
-        "t_span": (0, 100), "dt": 0.02,
-        "desc": "Relaxation oscillator with a stable limit cycle (μ=2).",
         "obs_idx": 0, "obs_name": "x(t)"
     },
 }
@@ -237,7 +207,7 @@ def plot_true_attractor(y, name, dim3):
         fig = go.Figure(go.Scatter3d(
             x=y[0], y=y[1], z=y[2],
             mode="lines",
-            line=dict(color=PALETTE[0], width=1.5,
+            line=dict(width=1.5,
                       colorscale="Plasma",
                       color=np.linspace(0, 1, len(y[0]))),
         ))
@@ -284,7 +254,7 @@ def plot_reconstruction(emb, dim):
         fig = go.Figure(go.Scatter3d(
             x=emb[:, 0], y=emb[:, 1], z=emb[:, 2],
             mode="lines",
-            line=dict(color=PALETTE[1], width=1.5,
+            line=dict(width=1.5,
                       colorscale="Viridis",
                       color=np.linspace(0, 1, len(emb[:, 0]))),
         ))
@@ -341,8 +311,9 @@ def plot_fnn(fnn, dim_opt):
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("### 🌀 System")
-    system_name = st.selectbox("Dynamical system", list(SYSTEMS.keys()), index=0)
+    system_name = "Lorenz"
     cfg = SYSTEMS[system_name]
+    st.markdown(f"**{system_name} attractor**")
     st.caption(cfg["desc"])
     st.markdown("---")
 
