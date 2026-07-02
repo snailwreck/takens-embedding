@@ -32,10 +32,10 @@ def time_delay_embedding(time_series, delay, dimension):
     return embedded
 
 # --- UI Setup ---
-st.title("🌌 Takens' Theorem & Attractor Reconstruction")
+st.title("Takens' Theorem & Attractor Reconstruction")
 st.markdown("""
-Takens' theorem states that we can reconstruct a chaotic system's multidimensional dynamics from a **single time series**. 
-Here, we simulate the 3D Lorenz attractor, "forget" about $y$ and $z$, and reconstruct the geometry using only delayed versions of $x$.
+Takens' theorem states that we can reconstruct a chaotic system's multidimensional dynamics from a single time series. 
+Here, we reconstruct the geometry of the Lorenz attractor using only delayed versions of $x$.
 """)
 
 # Sidebar inputs
@@ -64,37 +64,32 @@ x_recon = embedded_states[:, 0]
 y_recon = embedded_states[:, 1]
 z_recon = embedded_states[:, 2]
 
-# --- Visualizations ---
-col1, col2 = st.columns(2)
-
-with col1:
-    st.subheader("Original 3D Attractor")
-    st.markdown("The true phase space using $x$, $y$, and $z$.")
-    fig_orig = go.Figure(data=[go.Scatter3d(
-        x=x, y=y, z=z,
-        mode='lines',
-        line=dict(color=t, colorscale='Viridis', width=2)
-    )])
-    fig_orig.update_layout(margin=dict(l=0, r=0, b=0, t=0), height=500)
-    st.plotly_chart(fig_orig, use_container_width=True)
-
-with col2:
-    st.subheader("Reconstructed 3D Attractor")
-    st.markdown(f"Reconstructed using $x(t)$, $x(t - \\tau)$, and $x(t - 2\\tau)$.")
-    # Time vector adjusted for the delay truncation for coloring
-    t_recon = t[:len(x_recon)]
-    
-    fig_recon = go.Figure(data=[go.Scatter3d(
-        x=x_recon, y=y_recon, z=z_recon,
-        mode='lines',
-        line=dict(color=t_recon, colorscale='Plasma', width=2)
-    )])
-    fig_recon.update_layout(margin=dict(l=0, r=0, b=0, t=0), height=500)
-    st.plotly_chart(fig_recon, use_container_width=True)
+st.subheader("Original 3D Attractor")
+st.markdown("The true phase space using $x$, $y$, and $z$.")
+fig_orig = go.Figure(data=[go.Scatter3d(
+    x=x, y=y, z=z,
+    mode='lines',
+    line=dict(color=t, colorscale='Viridis', width=2)
+)])
+fig_orig.update_layout(margin=dict(l=0, r=0, b=0, t=0), height=500)
+st.plotly_chart(fig_orig, use_container_width=True)
 
 # Plot the 1D time series of X
-st.subheader("The Only Data We Used: $x(t)$")
-st.markdown("Notice how the single observable 1D time series encapsulates the multi-dimensional structure.")
+st.subheader("$x(t)$ time series")
 fig_ts = go.Figure(data=[go.Scatter(x=t, y=x, mode='lines', line=dict(color='#ff7f0e'))])
 fig_ts.update_layout(margin=dict(l=0, r=0, b=0, t=0), height=250, xaxis_title="Time", yaxis_title="x")
 st.plotly_chart(fig_ts, use_container_width=True)
+
+st.subheader("Reconstructed 3D Attractor")
+st.markdown(f"Reconstructed using $x(t)$, $x(t - \\tau)$, and $x(t - 2\\tau)$.")
+# Time vector adjusted for the delay truncation for coloring
+t_recon = t[:len(x_recon)]
+
+fig_recon = go.Figure(data=[go.Scatter3d(
+    x=x_recon, y=y_recon, z=z_recon,
+    mode='lines',
+    line=dict(color=t_recon, colorscale='Plasma', width=2)
+)])
+fig_recon.update_layout(margin=dict(l=0, r=0, b=0, t=0), height=500)
+st.plotly_chart(fig_recon, use_container_width=True)
+
