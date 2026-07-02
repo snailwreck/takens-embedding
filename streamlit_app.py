@@ -241,9 +241,7 @@ def plot_reconstruction(emb, dim):
     if dim == 2:
         fig = go.Figure(go.Scatter(
             x=emb[:, 0], y=emb[:, 1], mode="lines",
-            line=dict(color=PALETTE[1], width=1,
-                      colorscale="Viridis",
-                      color=np.linspace(0, 1, len(emb[:, 0]))),
+            line=dict(width=1, color=PALETTE[1]),
         ))
         fig.update_layout(
             xaxis=dict(title="s(t)", gridcolor="#2a2d3e", color="#8b8fa8"),
